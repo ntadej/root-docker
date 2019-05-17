@@ -1,9 +1,9 @@
-FROM fedora:29
+FROM fedora:30
 MAINTAINER tadej@cern.ch
 
 # Install ROOT
 RUN dnf -y update && \
-    dnf -y install cmake root xrootd-client && \
+    dnf -y install cmake make root xrootd-client && \
     dnf -y clean all
 
 # Install clang-tools-extra
