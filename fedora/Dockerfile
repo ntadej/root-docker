@@ -1,5 +1,5 @@
-FROM fedora:30
-MAINTAINER tadej@cern.ch
+FROM fedora:31
+LABEL maintainer="tadej@cern.ch"
 
 RUN dnf -y update && \
     dnf -y install cmake make root xrootd-client && \

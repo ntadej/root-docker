@@ -1,5 +1,5 @@
-FROM fedora:30
-MAINTAINER tadej@cern.ch
+FROM fedora:31
+LABEL maintainer="tadej@cern.ch"
 
 # Install ROOT
 RUN dnf -y update && \
