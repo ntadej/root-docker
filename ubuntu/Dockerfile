@@ -116,12 +116,12 @@ RUN apt-get update && apt-get install -y \
 # Builder
 FROM base-py${PYTHON_VERSION} as builder
 
-ARG ROOT_VERSION=6.18.04
+ARG ROOT_VERSION=6-18-04
 ENV CCACHE_DIR=/ccache
 
 RUN mkdir -p /root-build/build && cd /root-build \
- && wget https://root.cern/download/root_v${ROOT_VERSION}.source.tar.gz \
- && tar xf root_v${ROOT_VERSION}.source.tar.gz \
+ && wget https://github.com/root-project/root/archive/v${ROOT_VERSION}.tar.gz \
+ && tar xf v${ROOT_VERSION}.tar.gz \
  && mv root-${ROOT_VERSION} src
 
 RUN mkdir -p /root-build/xrootd/build && cd /root-build/xrootd \
@@ -137,7 +137,13 @@ RUN --mount=type=cache,target=/ccache/ cd /root-build/xrootd/build \
  && ccache -s
 
 RUN --mount=type=cache,target=/ccache/ cd /root-build/build \
- && cmake ../src -G Ninja -DCMAKE_CXX_STANDARD=17 -Dccache=ON \
+ && cmake ../src -G Ninja \
+    -DCMAKE_CXX_STANDARD=17 \
+    -Dccache=ON \
+    -Droofit=ON \
+    -Droostats=ON \
+    -Dhistfactory=ON \
+    -Dminuit2=ON \
  && ninja \
  && DESTDIR=/root-build/install ninja install \
  && ccache -s
@@ -163,8 +169,8 @@ RUN --mount=type=cache,target=/ccache/ mkdir /lhapdf-build && cd /lhapdf-build \
  && wget https://lhapdf.hepforge.org/downloads/?f=LHAPDF-6.2.3.tar.gz -O LHAPDF-6.2.3.tar.gz \
  && tar xf LHAPDF-6.2.3.tar.gz && cd LHAPDF-6.2.3 \
  && CC=/usr/lib/ccache/gcc-8 CXX=/usr/lib/ccache/g++-8 ./configure --prefix=/usr/local \
- && make \
- && make install \
+ && make -j$(nproc) \
+ && make -j$(nproc) install \
  && cd / && rm -rf /lhapdf-build \
  && ccache -s \
  && ldconfig \
@@ -188,6 +194,6 @@ RUN apt-get update && apt-get install -y \
 
 RUN git clone https://github.com/linux-test-project/lcov.git \
  && cd lcov \
- && make install \
+ && make -j$(nproc) install \
  && cd .. \
  && rm -r lcov
