@@ -1,10 +1,10 @@
 # syntax=docker/dockerfile:experimental
 
 # Defining environment
-ARG PYTHON_VERSION=2
+ARG PYTHON_VERSION=3
 
 # Base image
-FROM ubuntu:bionic AS base
+FROM ubuntu:focal AS base
 LABEL maintainer="tadej@cern.ch"
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -17,7 +17,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 RUN apt-get update && apt-get install -y \
     build-essential \
     ccache \
-    gcc-8 g++-8 \
+    gcc-10 g++-10 \
     git \
     locales \
     lsb-release \
@@ -45,49 +45,49 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get update && apt-get dist-upgrade -y \
  && rm -rf /var/lib/apt/lists/*
 
-# set gcc 8 as default
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 700 \
-    --slave /usr/bin/g++ g++ /usr/bin/g++-7 \
-    --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-7 \
-    --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-7 \
-    --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-7 \
-    --slave /usr/bin/gcov gcov /usr/bin/gcov-7 \
-    --slave /usr/bin/gcov-dump gcov-dump /usr/bin/gcov-dump-7 \
-    --slave /usr/bin/gcov-tool gcov-tool /usr/bin/gcov-tool-7 \
-    --slave /usr/bin/x86_64-linux-gnu-cpp x86_64-linux-gnu-cpp /usr/bin/x86_64-linux-gnu-cpp-7 \
-    --slave /usr/bin/x86_64-linux-gnu-g++ x86_64-linux-gnu-g++ /usr/bin/x86_64-linux-gnu-g++-7 \
-    --slave /usr/bin/x86_64-linux-gnu-gcc x86_64-linux-gnu-gcc /usr/bin/x86_64-linux-gnu-gcc-7 \
-    --slave /usr/bin/x86_64-linux-gnu-gcc-ar x86_64-linux-gnu-gcc-ar /usr/bin/x86_64-linux-gnu-gcc-ar-7 \
-    --slave /usr/bin/x86_64-linux-gnu-gcc-nm x86_64-linux-gnu-gcc-nm /usr/bin/x86_64-linux-gnu-gcc-nm-7 \
-    --slave /usr/bin/x86_64-linux-gnu-gcc-ranlib x86_64-linux-gnu-gcc-ranlib /usr/bin/x86_64-linux-gnu-gcc-ranlib-7 \
-    --slave /usr/bin/x86_64-linux-gnu-gcov x86_64-linux-gnu-gcov /usr/bin/x86_64-linux-gnu-gcov-7 \
-    --slave /usr/bin/x86_64-linux-gnu-gcov-dump x86_64-linux-gnu-gcov-dump /usr/bin/x86_64-linux-gnu-gcov-dump-7 \
-    --slave /usr/bin/x86_64-linux-gnu-gcov-tool x86_64-linux-gnu-gcov-tool /usr/bin/x86_64-linux-gnu-gcov-tool-7 \
- && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 \
-    --slave /usr/bin/g++ g++ /usr/bin/g++-8 \
-    --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-8 \
-    --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-8 \
-    --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-8 \
-    --slave /usr/bin/gcov gcov /usr/bin/gcov-8 \
-    --slave /usr/bin/gcov-dump gcov-dump /usr/bin/gcov-dump-8 \
-    --slave /usr/bin/gcov-tool gcov-tool /usr/bin/gcov-tool-8 \
-    --slave /usr/bin/x86_64-linux-gnu-cpp x86_64-linux-gnu-cpp /usr/bin/x86_64-linux-gnu-cpp-8 \
-    --slave /usr/bin/x86_64-linux-gnu-g++ x86_64-linux-gnu-g++ /usr/bin/x86_64-linux-gnu-g++-8 \
-    --slave /usr/bin/x86_64-linux-gnu-gcc x86_64-linux-gnu-gcc /usr/bin/x86_64-linux-gnu-gcc-8 \
-    --slave /usr/bin/x86_64-linux-gnu-gcc-ar x86_64-linux-gnu-gcc-ar /usr/bin/x86_64-linux-gnu-gcc-ar-8 \
-    --slave /usr/bin/x86_64-linux-gnu-gcc-nm x86_64-linux-gnu-gcc-nm /usr/bin/x86_64-linux-gnu-gcc-nm-8 \
-    --slave /usr/bin/x86_64-linux-gnu-gcc-ranlib x86_64-linux-gnu-gcc-ranlib /usr/bin/x86_64-linux-gnu-gcc-ranlib-8 \
-    --slave /usr/bin/x86_64-linux-gnu-gcov x86_64-linux-gnu-gcov /usr/bin/x86_64-linux-gnu-gcov-8 \
-    --slave /usr/bin/x86_64-linux-gnu-gcov-dump x86_64-linux-gnu-gcov-dump /usr/bin/x86_64-linux-gnu-gcov-dump-8 \
-    --slave /usr/bin/x86_64-linux-gnu-gcov-tool x86_64-linux-gnu-gcov-tool /usr/bin/x86_64-linux-gnu-gcov-tool-8
+# set gcc 10 as default
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 900 \
+    --slave /usr/bin/g++ g++ /usr/bin/g++-9 \
+    --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-9 \
+    --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-9 \
+    --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-9 \
+    --slave /usr/bin/gcov gcov /usr/bin/gcov-9 \
+    --slave /usr/bin/gcov-dump gcov-dump /usr/bin/gcov-dump-9 \
+    --slave /usr/bin/gcov-tool gcov-tool /usr/bin/gcov-tool-9 \
+    --slave /usr/bin/x86_64-linux-gnu-cpp x86_64-linux-gnu-cpp /usr/bin/x86_64-linux-gnu-cpp-9 \
+    --slave /usr/bin/x86_64-linux-gnu-g++ x86_64-linux-gnu-g++ /usr/bin/x86_64-linux-gnu-g++-9 \
+    --slave /usr/bin/x86_64-linux-gnu-gcc x86_64-linux-gnu-gcc /usr/bin/x86_64-linux-gnu-gcc-9 \
+    --slave /usr/bin/x86_64-linux-gnu-gcc-ar x86_64-linux-gnu-gcc-ar /usr/bin/x86_64-linux-gnu-gcc-ar-9 \
+    --slave /usr/bin/x86_64-linux-gnu-gcc-nm x86_64-linux-gnu-gcc-nm /usr/bin/x86_64-linux-gnu-gcc-nm-9 \
+    --slave /usr/bin/x86_64-linux-gnu-gcc-ranlib x86_64-linux-gnu-gcc-ranlib /usr/bin/x86_64-linux-gnu-gcc-ranlib-9 \
+    --slave /usr/bin/x86_64-linux-gnu-gcov x86_64-linux-gnu-gcov /usr/bin/x86_64-linux-gnu-gcov-9 \
+    --slave /usr/bin/x86_64-linux-gnu-gcov-dump x86_64-linux-gnu-gcov-dump /usr/bin/x86_64-linux-gnu-gcov-dump-9 \
+    --slave /usr/bin/x86_64-linux-gnu-gcov-tool x86_64-linux-gnu-gcov-tool /usr/bin/x86_64-linux-gnu-gcov-tool-9 \
+ && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 1000 \
+    --slave /usr/bin/g++ g++ /usr/bin/g++-10 \
+    --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-10 \
+    --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-10 \
+    --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-10 \
+    --slave /usr/bin/gcov gcov /usr/bin/gcov-10 \
+    --slave /usr/bin/gcov-dump gcov-dump /usr/bin/gcov-dump-10 \
+    --slave /usr/bin/gcov-tool gcov-tool /usr/bin/gcov-tool-10 \
+    --slave /usr/bin/x86_64-linux-gnu-cpp x86_64-linux-gnu-cpp /usr/bin/x86_64-linux-gnu-cpp-10 \
+    --slave /usr/bin/x86_64-linux-gnu-g++ x86_64-linux-gnu-g++ /usr/bin/x86_64-linux-gnu-g++-10 \
+    --slave /usr/bin/x86_64-linux-gnu-gcc x86_64-linux-gnu-gcc /usr/bin/x86_64-linux-gnu-gcc-10 \
+    --slave /usr/bin/x86_64-linux-gnu-gcc-ar x86_64-linux-gnu-gcc-ar /usr/bin/x86_64-linux-gnu-gcc-ar-10 \
+    --slave /usr/bin/x86_64-linux-gnu-gcc-nm x86_64-linux-gnu-gcc-nm /usr/bin/x86_64-linux-gnu-gcc-nm-10 \
+    --slave /usr/bin/x86_64-linux-gnu-gcc-ranlib x86_64-linux-gnu-gcc-ranlib /usr/bin/x86_64-linux-gnu-gcc-ranlib-10 \
+    --slave /usr/bin/x86_64-linux-gnu-gcov x86_64-linux-gnu-gcov /usr/bin/x86_64-linux-gnu-gcov-10 \
+    --slave /usr/bin/x86_64-linux-gnu-gcov-dump x86_64-linux-gnu-gcov-dump /usr/bin/x86_64-linux-gnu-gcov-dump-10 \
+    --slave /usr/bin/x86_64-linux-gnu-gcov-tool x86_64-linux-gnu-gcov-tool /usr/bin/x86_64-linux-gnu-gcov-tool-10
 
 # setup locales
-RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
+RUN sed -i -e 's/# en_US.UTF-10 UTF-8/en_US.UTF-10 UTF-8/' /etc/locale.gen \
  && locale-gen
 
 # setup cmake
-RUN version=3.16 \
- && build=5 \
+RUN version=3.19 \
+ && build=8 \
  && wget https://cmake.org/files/v$version/cmake-$version.$build-Linux-x86_64.sh \
  && mkdir /opt/cmake \
  && sh cmake-$version.$build-Linux-x86_64.sh --prefix=/opt/cmake --exclude-subdir --skip-license \
@@ -102,7 +102,6 @@ RUN apt-get update && apt-get install -y \
     python-dev \
  && rm -rf /var/lib/apt/lists/*
 
-
 # Base + Python 3
 FROM base as base-py3
 
@@ -110,13 +109,14 @@ RUN apt-get update && apt-get install -y \
     python3 \
     python3-dev \
  && rm -rf /var/lib/apt/lists/* \
- && update-alternatives --install /usr/bin/python python /usr/bin/python3.6 36
+ && update-alternatives --install /usr/bin/python python /usr/bin/python3.8 38
 
 
 # Builder
 FROM base-py${PYTHON_VERSION} as builder
 
-ARG ROOT_VERSION=6-18-04
+ARG ROOT_VERSION=6-22-06
+ARG XROOTD_VERSION=4.12.6
 ENV CCACHE_DIR=/ccache
 
 RUN mkdir -p /root-build/build && cd /root-build \
@@ -125,12 +125,12 @@ RUN mkdir -p /root-build/build && cd /root-build \
  && mv root-${ROOT_VERSION} src
 
 RUN mkdir -p /root-build/xrootd/build && cd /root-build/xrootd \
- && wget https://xrootd.slac.stanford.edu/download/v4.11.1/xrootd-4.11.1.tar.gz \
- && tar xf xrootd-4.11.1.tar.gz \
- && mv xrootd-4.11.1 src
+ && wget https://xrootd.slac.stanford.edu/download/v${XROOTD_VERSION}/xrootd-${XROOTD_VERSION}.tar.gz \
+ && tar xf xrootd-${XROOTD_VERSION}.tar.gz \
+ && mv xrootd-${XROOTD_VERSION} src
 
 RUN --mount=type=cache,target=/ccache/ cd /root-build/xrootd/build \
- && CC=/usr/lib/ccache/gcc-8 CXX=/usr/lib/ccache/g++-8 cmake ../src -G Ninja \
+ && CC=/usr/lib/ccache/gcc-10 CXX=/usr/lib/ccache/g++-10 cmake ../src -G Ninja \
  && ninja \
  && ninja install \
  && DESTDIR=/root-build/install ninja install \
@@ -138,6 +138,7 @@ RUN --mount=type=cache,target=/ccache/ cd /root-build/xrootd/build \
 
 RUN --mount=type=cache,target=/ccache/ cd /root-build/build \
  && cmake ../src -G Ninja \
+    -DPYTHON_EXECUTABLE=/usr/bin/python \
     -DCMAKE_CXX_STANDARD=17 \
     -Dccache=ON \
     -Droofit=ON \
@@ -159,22 +160,26 @@ COPY --from=builder /root-build/install .
 
 RUN ldconfig
 
-ENV PYTHONPATH=/usr/local/lib
+ENV PYTHONPATH=/usr/local/lib:/usr/local/lib/python3.8/site-packages
 
 
 # LHAPDF image
 FROM final as lhapdf
 
 RUN --mount=type=cache,target=/ccache/ mkdir /lhapdf-build && cd /lhapdf-build \
- && wget https://lhapdf.hepforge.org/downloads/?f=LHAPDF-6.2.3.tar.gz -O LHAPDF-6.2.3.tar.gz \
- && tar xf LHAPDF-6.2.3.tar.gz && cd LHAPDF-6.2.3 \
- && CC=/usr/lib/ccache/gcc-8 CXX=/usr/lib/ccache/g++-8 ./configure --prefix=/usr/local \
+ && wget https://lhapdf.hepforge.org/downloads/?f=LHAPDF-6.3.0.tar.gz -O LHAPDF-6.3.0.tar.gz \
+ && tar xf LHAPDF-6.3.0.tar.gz && cd LHAPDF-6.3.0 \
+ && CC=/usr/lib/ccache/gcc-10 CXX=/usr/lib/ccache/g++-10 ./configure --prefix=/usr/local \
  && make -j$(nproc) \
  && make -j$(nproc) install \
  && cd / && rm -rf /lhapdf-build \
  && ccache -s \
- && ldconfig \
- && lhapdf --listdir /usr/local/share/LHAPDF/ install NNPDF30_lo_as_0130 NNPDF30_nlo_as_0118 NNPDF30_nnlo_as_0118
+ && ldconfig
+
+RUN lhapdf --listdir /usr/local/share/LHAPDF/ install \
+    NNPDF30_lo_as_0130 \
+    NNPDF30_nlo_as_0118 \
+    NNPDF30_nnlo_as_0118
 
 
 # Dev image
