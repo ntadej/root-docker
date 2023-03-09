@@ -4,8 +4,11 @@
 ARG PYTHON_VERSION=3
 
 # Base image
-FROM ubuntu:focal AS base
+FROM ubuntu:jammy AS base
 LABEL maintainer="tadej@cern.ch"
+
+RUN apt-get update && apt-get dist-upgrade -y \
+ && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     krb5-user \
@@ -17,7 +20,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 RUN apt-get update && apt-get install -y \
     build-essential \
     ccache \
-    gcc-10 g++-10 \
+    gcc g++ \
     git \
     locales \
     lsb-release \
@@ -42,65 +45,26 @@ RUN apt-get update && apt-get install -y \
     zlib1g-dev \
  && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get dist-upgrade -y \
- && rm -rf /var/lib/apt/lists/*
-
-# set gcc 10 as default
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 900 \
-    --slave /usr/bin/g++ g++ /usr/bin/g++-9 \
-    --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-9 \
-    --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-9 \
-    --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-9 \
-    --slave /usr/bin/gcov gcov /usr/bin/gcov-9 \
-    --slave /usr/bin/gcov-dump gcov-dump /usr/bin/gcov-dump-9 \
-    --slave /usr/bin/gcov-tool gcov-tool /usr/bin/gcov-tool-9 \
-    --slave /usr/bin/x86_64-linux-gnu-cpp x86_64-linux-gnu-cpp /usr/bin/x86_64-linux-gnu-cpp-9 \
-    --slave /usr/bin/x86_64-linux-gnu-g++ x86_64-linux-gnu-g++ /usr/bin/x86_64-linux-gnu-g++-9 \
-    --slave /usr/bin/x86_64-linux-gnu-gcc x86_64-linux-gnu-gcc /usr/bin/x86_64-linux-gnu-gcc-9 \
-    --slave /usr/bin/x86_64-linux-gnu-gcc-ar x86_64-linux-gnu-gcc-ar /usr/bin/x86_64-linux-gnu-gcc-ar-9 \
-    --slave /usr/bin/x86_64-linux-gnu-gcc-nm x86_64-linux-gnu-gcc-nm /usr/bin/x86_64-linux-gnu-gcc-nm-9 \
-    --slave /usr/bin/x86_64-linux-gnu-gcc-ranlib x86_64-linux-gnu-gcc-ranlib /usr/bin/x86_64-linux-gnu-gcc-ranlib-9 \
-    --slave /usr/bin/x86_64-linux-gnu-gcov x86_64-linux-gnu-gcov /usr/bin/x86_64-linux-gnu-gcov-9 \
-    --slave /usr/bin/x86_64-linux-gnu-gcov-dump x86_64-linux-gnu-gcov-dump /usr/bin/x86_64-linux-gnu-gcov-dump-9 \
-    --slave /usr/bin/x86_64-linux-gnu-gcov-tool x86_64-linux-gnu-gcov-tool /usr/bin/x86_64-linux-gnu-gcov-tool-9 \
- && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 1000 \
-    --slave /usr/bin/g++ g++ /usr/bin/g++-10 \
-    --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-10 \
-    --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-10 \
-    --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-10 \
-    --slave /usr/bin/gcov gcov /usr/bin/gcov-10 \
-    --slave /usr/bin/gcov-dump gcov-dump /usr/bin/gcov-dump-10 \
-    --slave /usr/bin/gcov-tool gcov-tool /usr/bin/gcov-tool-10 \
-    --slave /usr/bin/x86_64-linux-gnu-cpp x86_64-linux-gnu-cpp /usr/bin/x86_64-linux-gnu-cpp-10 \
-    --slave /usr/bin/x86_64-linux-gnu-g++ x86_64-linux-gnu-g++ /usr/bin/x86_64-linux-gnu-g++-10 \
-    --slave /usr/bin/x86_64-linux-gnu-gcc x86_64-linux-gnu-gcc /usr/bin/x86_64-linux-gnu-gcc-10 \
-    --slave /usr/bin/x86_64-linux-gnu-gcc-ar x86_64-linux-gnu-gcc-ar /usr/bin/x86_64-linux-gnu-gcc-ar-10 \
-    --slave /usr/bin/x86_64-linux-gnu-gcc-nm x86_64-linux-gnu-gcc-nm /usr/bin/x86_64-linux-gnu-gcc-nm-10 \
-    --slave /usr/bin/x86_64-linux-gnu-gcc-ranlib x86_64-linux-gnu-gcc-ranlib /usr/bin/x86_64-linux-gnu-gcc-ranlib-10 \
-    --slave /usr/bin/x86_64-linux-gnu-gcov x86_64-linux-gnu-gcov /usr/bin/x86_64-linux-gnu-gcov-10 \
-    --slave /usr/bin/x86_64-linux-gnu-gcov-dump x86_64-linux-gnu-gcov-dump /usr/bin/x86_64-linux-gnu-gcov-dump-10 \
-    --slave /usr/bin/x86_64-linux-gnu-gcov-tool x86_64-linux-gnu-gcov-tool /usr/bin/x86_64-linux-gnu-gcov-tool-10
-
 # setup locales
 RUN sed -i -e 's/# en_US.UTF-10 UTF-8/en_US.UTF-10 UTF-8/' /etc/locale.gen \
  && locale-gen
 
 # setup cmake
-RUN version=3.19 \
- && build=8 \
- && wget https://cmake.org/files/v$version/cmake-$version.$build-Linux-x86_64.sh \
+RUN version=3.24.0 \
+ && wget https://github.com/Kitware/CMake/releases/download/v$version/cmake-$version-linux-x86_64.sh \
  && mkdir /opt/cmake \
- && sh cmake-$version.$build-Linux-x86_64.sh --prefix=/opt/cmake --exclude-subdir --skip-license \
+ && sh cmake-$version-linux-x86_64.sh --prefix=/opt/cmake --exclude-subdir --skip-license \
  && ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake \
- && rm cmake-$version.$build-Linux-x86_64.sh
+ && rm cmake-$version-linux-x86_64.sh
 
 # Base + Python 2
 FROM base as base-py2
 
 RUN apt-get update && apt-get install -y \
-    python \
-    python-dev \
- && rm -rf /var/lib/apt/lists/*
+    python2 \
+    python2-dev \
+ && rm -rf /var/lib/apt/lists/* \
+ && update-alternatives --install /usr/bin/python python /usr/bin/python2.7 270
 
 # Base + Python 3
 FROM base as base-py3
@@ -108,15 +72,17 @@ FROM base as base-py3
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-dev \
+    cython3 \
  && rm -rf /var/lib/apt/lists/* \
- && update-alternatives --install /usr/bin/python python /usr/bin/python3.8 38
+ && update-alternatives --install /usr/bin/python python /usr/bin/python3.10 310 \
+ && update-alternatives --install /usr/bin/cython cython /usr/bin/cython3 310
 
 
 # Builder
 FROM base-py${PYTHON_VERSION} as builder
 
-ARG ROOT_VERSION=6-22-06
-ARG XROOTD_VERSION=4.12.6
+ARG ROOT_VERSION=6-26-08
+ARG XROOTD_VERSION=5.4.3
 ENV CCACHE_DIR=/ccache
 
 RUN mkdir -p /root-build/build && cd /root-build \
@@ -130,7 +96,7 @@ RUN mkdir -p /root-build/xrootd/build && cd /root-build/xrootd \
  && mv xrootd-${XROOTD_VERSION} src
 
 RUN --mount=type=cache,target=/ccache/ cd /root-build/xrootd/build \
- && CC=/usr/lib/ccache/gcc-10 CXX=/usr/lib/ccache/g++-10 cmake ../src -G Ninja \
+ && CC=/usr/lib/ccache/gcc-11 CXX=/usr/lib/ccache/g++-11 cmake ../src -G Ninja \
  && ninja \
  && ninja install \
  && DESTDIR=/root-build/install ninja install \
@@ -160,16 +126,17 @@ COPY --from=builder /root-build/install .
 
 RUN ldconfig
 
-ENV PYTHONPATH=/usr/local/lib:/usr/local/lib/python3.8/site-packages
+ENV PYTHONPATH=/usr/local/lib:/usr/local/lib/python3.10/site-packages
 
 
 # LHAPDF image
 FROM final as lhapdf
 
 RUN --mount=type=cache,target=/ccache/ mkdir /lhapdf-build && cd /lhapdf-build \
- && wget https://lhapdf.hepforge.org/downloads/?f=LHAPDF-6.3.0.tar.gz -O LHAPDF-6.3.0.tar.gz \
- && tar xf LHAPDF-6.3.0.tar.gz && cd LHAPDF-6.3.0 \
- && CC=/usr/lib/ccache/gcc-10 CXX=/usr/lib/ccache/g++-10 ./configure --prefix=/usr/local \
+ && wget https://lhapdf.hepforge.org/downloads/?f=LHAPDF-6.5.1.tar.gz -O LHAPDF-6.5.1.tar.gz \
+ && tar xf LHAPDF-6.5.1.tar.gz && cd LHAPDF-6.5.1 \
+ && CC=/usr/lib/ccache/gcc-11 CXX=/usr/lib/ccache/g++-11 ./configure --prefix=/usr/local \
+ && if ! command -v python2 >/dev/null 2>&1; then rm wrappers/python/lhapdf.cpp; fi \
  && make -j$(nproc) \
  && make -j$(nproc) install \
  && cd / && rm -rf /lhapdf-build \
@@ -194,7 +161,7 @@ RUN apt-get update && apt-get install -y \
     libjson-perl \
     libperlio-gzip-perl \
     libtiff5 \
-    libwebp6 \
+    libwebp7 \
  && rm -rf /var/lib/apt/lists/*
 
 RUN git clone https://github.com/linux-test-project/lcov.git \
