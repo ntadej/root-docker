@@ -1,8 +1,5 @@
 # syntax=docker/dockerfile:experimental
 
-# Defining environment
-ARG PYTHON_VERSION=3
-
 # Base image
 FROM ubuntu:jammy AS base
 LABEL maintainer="tadej@cern.ch"
@@ -57,16 +54,6 @@ RUN version=3.25.3 \
  && ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake \
  && rm cmake-$version-linux-x86_64.sh
 
-# Base + Python 2
-FROM base as base-py2
-
-RUN apt-get update && apt-get install -y \
-    python2 \
-    python2-dev \
-    python-setuptools \
- && rm -rf /var/lib/apt/lists/* \
- && update-alternatives --install /usr/bin/python python /usr/bin/python2.7 270
-
 # Base + Python 3
 FROM base as base-py3
 
@@ -81,7 +68,7 @@ RUN apt-get update && apt-get install -y \
 
 
 # Builder
-FROM base-py${PYTHON_VERSION} as builder
+FROM base-py3 as builder
 
 ARG ROOT_VERSION=6-26-08
 ARG XROOTD_VERSION=5.5.3
@@ -122,7 +109,7 @@ RUN cp -r /root-build/install/usr/local/man/* /root-build/install/usr/local/shar
 
 
 # Final image
-FROM base-py${PYTHON_VERSION} as final
+FROM base-py3 as final
 
 COPY --from=builder /root-build/install .
 
