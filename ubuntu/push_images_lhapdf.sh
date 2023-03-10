@@ -4,6 +4,10 @@ docker push ntadej/root-ubuntu:6.26.08-py2-lhapdf
 docker push ntadej/root-ubuntu:6.26.08-py3-lhapdf
 docker push ntadej/root-ubuntu:6.26.08-lhapdf
 
+docker push ntadej/root-ubuntu:6.26.10-py2-lhapdf
+docker push ntadej/root-ubuntu:6.26.10-py3-lhapdf
+docker push ntadej/root-ubuntu:6.26.10-lhapdf
+
 docker push ntadej/root-ubuntu:6.26-py2-lhapdf
 docker push ntadej/root-ubuntu:6.26-py3-lhapdf
 docker push ntadej/root-ubuntu:6.26-lhapdf

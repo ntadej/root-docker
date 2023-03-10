@@ -50,7 +50,7 @@ RUN sed -i -e 's/# en_US.UTF-10 UTF-8/en_US.UTF-10 UTF-8/' /etc/locale.gen \
  && locale-gen
 
 # setup cmake
-RUN version=3.24.0 \
+RUN version=3.25.3 \
  && wget https://github.com/Kitware/CMake/releases/download/v$version/cmake-$version-linux-x86_64.sh \
  && mkdir /opt/cmake \
  && sh cmake-$version-linux-x86_64.sh --prefix=/opt/cmake --exclude-subdir --skip-license \
@@ -63,6 +63,7 @@ FROM base as base-py2
 RUN apt-get update && apt-get install -y \
     python2 \
     python2-dev \
+    python-setuptools \
  && rm -rf /var/lib/apt/lists/* \
  && update-alternatives --install /usr/bin/python python /usr/bin/python2.7 270
 
@@ -72,6 +73,7 @@ FROM base as base-py3
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-dev \
+    python3-setuptools \
     cython3 \
  && rm -rf /var/lib/apt/lists/* \
  && update-alternatives --install /usr/bin/python python /usr/bin/python3.10 310 \
@@ -82,7 +84,7 @@ RUN apt-get update && apt-get install -y \
 FROM base-py${PYTHON_VERSION} as builder
 
 ARG ROOT_VERSION=6-26-08
-ARG XROOTD_VERSION=5.4.3
+ARG XROOTD_VERSION=5.5.3
 ENV CCACHE_DIR=/ccache
 
 RUN mkdir -p /root-build/build && cd /root-build \
@@ -133,8 +135,8 @@ ENV PYTHONPATH=/usr/local/lib:/usr/local/lib/python3.10/site-packages
 FROM final as lhapdf
 
 RUN --mount=type=cache,target=/ccache/ mkdir /lhapdf-build && cd /lhapdf-build \
- && wget https://lhapdf.hepforge.org/downloads/?f=LHAPDF-6.5.1.tar.gz -O LHAPDF-6.5.1.tar.gz \
- && tar xf LHAPDF-6.5.1.tar.gz && cd LHAPDF-6.5.1 \
+ && wget https://lhapdf.hepforge.org/downloads/?f=LHAPDF-6.5.3.tar.gz -O LHAPDF-6.5.3.tar.gz \
+ && tar xf LHAPDF-6.5.3.tar.gz && cd LHAPDF-6.5.3 \
  && CC=/usr/lib/ccache/gcc-11 CXX=/usr/lib/ccache/g++-11 ./configure --prefix=/usr/local \
  && if ! command -v python2 >/dev/null 2>&1; then rm wrappers/python/lhapdf.cpp; fi \
  && make -j$(nproc) \
