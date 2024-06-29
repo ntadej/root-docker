@@ -70,8 +70,8 @@ RUN apt-get update && apt-get install -y \
 # Builder
 FROM base-py3 as builder
 
-ARG ROOT_VERSION=6-26-08
-ARG XROOTD_VERSION=5.5.3
+ARG ROOT_VERSION=6-28-08
+ARG XROOTD_VERSION=5.5.5
 ENV CCACHE_DIR=/ccache
 
 RUN mkdir -p /root-build/build && cd /root-build \
@@ -142,6 +142,9 @@ RUN lhapdf --listdir /usr/local/share/LHAPDF/ install \
 FROM lhapdf as dev
 
 RUN apt-get update && apt-get install -y \
+    libcapture-tiny-perl \
+    libdatetime-perl \
+    libdatetime-format-dateparse-perl \
     libgd-perl \
     libgd3 \
     libjbig0 \
@@ -153,7 +156,7 @@ RUN apt-get update && apt-get install -y \
     libwebp7 \
  && rm -rf /var/lib/apt/lists/*
 
-RUN git clone https://github.com/linux-test-project/lcov.git \
+RUN git clone https://github.com/linux-test-project/lcov.git -b v2.0 \
  && cd lcov \
  && make -j$(nproc) install \
  && cd .. \
